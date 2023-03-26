@@ -1,0 +1,160 @@
+@app.route('/encode_docfiles', methods = ['GET','POST'])
+# def encode_knowledge_base():
+#     req_data = request.get_json()
+#     user_id = req_data['user_id']
+#     text = req_data['text']
+#     try:
+#         cust_info = userdb.find_one({"_id":user_id})
+#     except:
+#         userdb.insert_one({"_id":user_id,"chat":""})
+#         datadb.insert_one({"_id":user_id,"data":[]})
+#         cust_info = userdb.find_one({"_id":user_id})
+#     if(Path('facebook').is_dir()==False):
+#         print("PATH EXISTS")
+#         try:
+#             download_blob_new("databucket_accintia2", "facebook/dpr-ctx_encoder-single-nq-base",os.path.join(os.getcwd(),"dpr-ctx_encoder-single-nq-base"))
+#             download_blob_new("databucket_accintia2", "facebook/dpr-question_encoder-single-nq-base",os.path.join(os.getcwd(),"dpr-question_encoder-single-nq-base"))
+#         except Exception as e:
+#             print(e)
+    
+#     try:
+#         download_blob("accintia_knowledge_base2", f"Saurabhembedding.pkl",os.path.join(os.getcwd(),"encoded_pickle_file.pkl"))
+#         download_blob("accintia_knowledge_base2", f"Saurabhcorpus.pkl",os.path.join(os.getcwd(),"corpus.pkl"))
+#         encoded_data = pickle.load(open("encoded_pickle_file.pkl", "rb"))
+#         os.remove("encoded_pickle_file.pkl")
+#     except Exception as e:
+#         print(e)
+#         # if not found, create a new  file
+#         encoded_data = InMemoryDocumentStore()
+#     # join the array of strings into a single string
+#     file_list = []
+#     for file in glob.glob('docfiles/*.docx'):
+#         file_list.append(file)
+#     print("FILE LIST:",file_list)
+#     corpus = []
+#     temp=0
+#     para=""
+#     count=0
+#     for file in file_list:
+#         count=0
+#         para=""
+#         x = docx2txt.process(file).strip().split()
+#         print(x)
+#         for i in x:
+#             if(count<=90):
+#                 para=para + i + " "
+#                 count=count+1
+#                 print("Para=",para)
+#             else:
+#                 if(count<=150):
+                    
+#                     if(i.endswith(".") or i.endswith("!")):
+#                         print("############################################Entered 1ST block")
+#                         para=para + i + "."
+#                         corpus.append(para)
+#                         para=""
+#                         count=0
+#                     else:
+#                         print("############################################Entered 2ND block")
+#                         para=para + i + " "
+#                         count=count+1
+#         else:
+#             corpus.append(para)
+#         print(corpus)
+           
+
+#         # for i in x:
+#         #     if(temp!=2):
+#         #         para=para+i+" "
+#         #         temp=temp+1
+#         #     else:
+#         #         para=para+i+" "
+#         #         temp=0
+#         #         corpus.append(para)
+#         #         para=""
+#     print(corpus)
+#     openai.api_key = json.load(open("env.json"))["OPENAI_API_KEY"]
+#     encoded_data = []
+#     for i in corpus:
+#         embedding = get_embedding(i, engine='text-embedding-ada-002')
+#         encoded_data.append(embedding)
+#     encoded_data = np.stack(encoded_data)
+#     encoded_data = encoded_data.astype(np.float32)
+#     with open(f'Saurabhembedding.pkl', 'wb') as f:
+#          pickle.dump(encoded_data, f)
+#     with open(f'Saurabhcorpus.pkl', 'wb') as f:
+#         pickle.dump(corpus, f)
+#     try:
+#         # delete the existing .pkl file from the bucket
+#         delete_blob("accintia_knowledge_base2", f"Saurabhembedding.pkl")
+#         delete_blob("accintia_knowledge_base2", f"Saurabhcorpus.pkl")
+#     except:
+#         pass
+#     upload_blob("accintia_knowledge_base2", f"Saurabhembedding.pkl", f"Saurabhembedding.pkl")
+#     upload_blob("accintia_knowledge_base2", f"Saurabhcorpus.pkl", f"Saurabhcorpus.pkl")
+#     os.remove(f"Saurabhembedding.pkl")
+#     os.remove(f"Saurabhcorpus.pkl")
+#     # file_names=[]
+#     # text = '\n'.join(text)
+#     # for filename in os.scandir("textfiles"):
+#     #     print("FILENAME: ",filename.name)
+#     #     file_names.append(filename.name)
+#     # for file in file_names:
+#     #     with open(f"{file}", "a") as f:
+#     #         f.write(text)
+#     #     #print(text)
+#     #     converter = TextConverter(remove_numeric_tables=True, valid_languages=["en"])
+#     #     data_processed = converter.convert(file_path=f'./textfiles/{file}', meta=None)[0]
+#     #     #delete the .txt file
+#     #     os.remove(f"{file}")
+#     #     preprocessor = PreProcessor(split_by = 'word', 
+#     #                                 clean_whitespace = True, 
+#     #                                 split_length = 100, 
+#     #                                 split_overlap = 10,
+#     #                                 split_respect_sentence_boundary = True)
+
+
+#     #     preprocessed = preprocessor.process(data_processed)
+#     #     all_docs = document_store.get_all_documents()
+#     #     print(all_docs)
+#     #     document_store.write_documents(preprocessed)
+#     #     start = time.time()
+#     #     retriever = DensePassageRetriever(
+#     #     document_store=document_store,
+#     #     query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
+#     #     #query_embedding_model="vblagoje/dpr-question_encoder-single-lfqa-wiki",
+#     #     #query_embedding_model="facebook/dpr-question_encoder-multiset-base",
+#     #     passage_embedding_model="facebook/dpr-ctx_encoder-single-nq-base",
+#     #     #passage_embedding_model="vblagoje/dpr-ctx_encoder-single-lfqa-wiki",
+#     #     #passage_embedding_model="facebook/dpr-ctx_encoder-multiset-base",
+#     #     max_seq_len_query=64,
+#     #     max_seq_len_passage=256,
+#     #     batch_size=16,
+#     #     use_gpu=True,
+#     #     embed_title=True,
+#     #     use_fast_tokenizers=True,
+#     #     )
+#     # print(time.time()-start)
+#     # start = time.time()
+#     # document_store.update_embeddings(retriever)
+#     # print(time.time()-start)
+#     # all_docs = document_store.get_all_documents()
+#     # print(all_docs)
+#     # with open(f'quickTalk.pkl', 'wb') as f:
+#     #     pickle.dump(document_store, f)
+
+#     # try:
+#     #     #delete the existing .pkl file from the bucket
+#     #     delete_blob("accintia_knowledge_base", f"quickTalk.pkl")
+#     # except:
+#     #     pass
+#     # #store the new .pkl file in the bucket
+#     # upload_blob("accintia_knowledge_base", f"quickTalk.pkl", f"quickTalk.pkl")
+#     # #delete the .pkl file from the local machine
+#     # os.remove(f"quickTalk.pkl")
+
+#     response = {
+#         'status': "sucessful",
+#     }
+
+#     return jsonify(response)

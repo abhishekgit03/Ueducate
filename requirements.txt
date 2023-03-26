@@ -1,0 +1,10 @@
+Flask==2.1.2
+Flask-Cors==3.0.10
+openai==0.20.0
+haystack==0.42
+farm-haystack==1.6.0
+docx2txt==0.8
+# faiss-cpu==1.7.3
+faiss-gpu==1.7.2
+plotly==5.11.0
+matplotlib==3.5.3
